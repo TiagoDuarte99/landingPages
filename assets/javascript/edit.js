@@ -1,4 +1,4 @@
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTgzMTI1OTksImV4cCI6MTcxODMxNjE5OSwibmJmIjoxNzE4MzEyNTk5LCJqdGkiOiJad2ZGQzF2OXp5cnIxM2w3Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.ksxLg4svWM1gcrM3z09ka2S_ANxv4S3Hi93q-YYkUjM';
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTg5MDIwODQsImV4cCI6MTcxODkwNTY4NCwibmJmIjoxNzE4OTAyMDg0LCJqdGkiOiJFM1AxYk9uNFdCamRNcjhpIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.rqHsbmyQ6KLN-IGHBOpHS949kE3vylyecUoRMu2vRRE';
 
 const urlBase = 'http://localhost:8000/';/*https://landingpages.svr6.appsfarma.com/  */
 const namePage = 'TesteCKEDITOR2'
@@ -27,15 +27,21 @@ document.addEventListener('DOMContentLoaded', async function () {
   await data().then(dataFromBackend => {
     if (dataFromBackend && dataFromBackend.success && dataFromBackend.data.length > 0) {
       const contentData = dataFromBackend.data[0].content;
+      const contentPoints = dataFromBackend.data[0].contentPoints;
+      console.log(contentData);
+      console.log(contentPoints);
+      const contentPointsString = JSON.parse(contentPoints);
 
       contentData.forEach((item, index) => {
-        getSection(item.type, item.elements, item.backgroundColor);
+        getSection(item.type, item.elements, item.backgroundColor, contentPointsString);
       });
 
       const title = document.getElementById('pageTitle');
       const description = document.getElementById('pageDescription');
+      const metaTitle = document.getElementById('metaTitle');
       title.value = dataFromBackend.data[0].title;
       description.value = dataFromBackend.data[0].description;
+      metaTitle.value = dataFromBackend.data[0].metaTitle;
     }
   });
 
@@ -70,37 +76,30 @@ document.addEventListener('DOMContentLoaded', async function () {
   imageInput.addEventListener('change', async function (event) {
     const file = event.target.files[0];
 
-    if (file) {
-      addSectionButton.disabled = false;
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
 
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch(`${urlBase}upload`, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao enviar arquivo.');
+      const response = await fetch(`${urlBase}upload`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
+      });
 
-        const responseData = await response.json();
-        console.log('Resposta da API:', responseData);
-        imgApi = responseData;
-        const customFileLabel = document.getElementById('file-label');
-        customFileLabel.textContent = responseData.url;
-
-      } catch (error) {
-        console.error('Erro:', error);
+      if (!response.ok) {
+        throw new Error('Erro ao enviar arquivo.');
       }
 
-    } else {
-      addSectionButton.disabled = true;
+      const responseData = await response.json();
+      console.log('Resposta da API:', responseData);
+      imgApi = responseData;
+      const customFileLabel = document.getElementById('file-label');
+      customFileLabel.textContent = responseData.url;
+      checkImageSelected();
+    } catch (error) {
+      console.error('Erro:', error);
     }
   });
 
@@ -119,16 +118,13 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
 
   function checkImageSelected() {
-    console.log('Checking image')
     const file = imageInput.files[0];
-
     if (file) {
       addSectionButton.disabled = false;
     } else {
       addSectionButton.disabled = true;
     }
   }
-
 
   document.getElementById('add-section-button').addEventListener('click', () => {
     additionalOptions.style.display = 'none';
@@ -157,9 +153,6 @@ document.addEventListener('DOMContentLoaded', async function () {
       openConfirmationModal(sectionId);
     });
   });
-
-
-
 
 });
 
@@ -191,11 +184,16 @@ function openConfirmationModal(sectionId) {
   $(`#deleteModal-${sectionId}`).modal('show');
 
   $(`#confirmDelete-${sectionId}`).click(function () {
-    console.log('entrei')
     const sectionToDelete = document.getElementById(`section-${sectionId}`);
     if (sectionToDelete) {
       console.log(sectionToDelete)
       sectionToDelete.remove();
+      const editableSections = document.querySelectorAll('.editable-section');
+      editableSections.forEach((section, index) => {
+        console.log(index, section)
+        section.id = `section-${index}`;
+        editorCount = index;
+      });
     }
     $(`#deleteModal-${sectionId}`).modal('hide');
   });
@@ -208,12 +206,6 @@ function addEditor(sectionId) {
       extraPlugins: [CustomUploadAdapterPlugin]
     })
     .then(editor => {
-      // Find the editor container and add the Bootstrap class
-      /*       const editorContainer2 = element.parentElement.querySelector('.ck.ck-reset.ck-editor.ck-rounded-corners');
-            console.log(editorContainer2);
-            if (editorContainer2) {
-              editorContainer2.classList.add('col-md-6'); // ou 'col-md-8', conforme a sua necessidade
-            } */
       editors[sectionId] = editor;
       document.getElementById('close-modal').click();
       document.querySelectorAll('input[name="sectionType"]').forEach(radioButton => {
@@ -285,7 +277,8 @@ class MyUploadAdapter {
   }
 }
 
-function getSection(type, sectionItems, backgroundColor, position = null) {
+function getSection(type, sectionItems, backgroundColor, points, position = null) {
+
   sectionContainer = document.createElement('section');
   sectionContainer.dataset.type = type;
   sectionContainer.id = `section-${sectionCount}`;
@@ -356,32 +349,34 @@ function getSection(type, sectionItems, backgroundColor, position = null) {
 
   sectionCount++;
   let count = 0;
+  let countType6 = 0;
+
   sectionItems.forEach((item, index) => {
     const div = document.createElement('div');
     if (type === 'type1') {
       div.className = `editable-section col-12 mt-4`;
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       p.innerHTML = `100% da div`;
       infoDiv.appendChild(p);
     } else if (type === 'type2') {
       div.className = `editable-section col-md-8 mt-4`;
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       p.innerHTML = `75% da div`;
       infoDiv.appendChild(p);
     } else if (type === 'type3') {
       div.className = `editable-section col-md-6 mt-4`;
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       if (count === 0) {
         p.innerHTML = `Left section`;
         count++;
       } else if (count === 1) {
         p.innerHTML = `Right section`;
-        count = 0; // Reset count for the next pair of sections
+        count = 0;
       }
       infoDiv.appendChild(p);
     } else if (type === 'type4') {
       div.className = `editable-section col-md-4 mt-4`;
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       if (count === 0) {
         p.innerHTML = `Left section`;
         count++;
@@ -395,14 +390,48 @@ function getSection(type, sectionItems, backgroundColor, position = null) {
       infoDiv.appendChild(p);
     } if (type === 'type5') {
       div.className = `editable-section col-12 mt-4`;
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       p.innerHTML = `Contact Form`;
+      infoDiv.appendChild(p);
+    } else if (type === 'type6-left' || type === 'type6-right') {
+      console.log(type)
+      div.className = `editable-section col-md-6 mt-4`;
+      const p = document.createElement('h6');
+      if (count === 0 && type === 'type6-left') {
+        div.className += ` imgPoints`;
+        p.innerHTML = `Left section`;
+        count++;
+      } else if (count === 1 && type === 'type6-left') {
+        p.innerHTML = `Right section`;
+        count = 0;
+      } else if (count === 0 && type === 'type6-right') {
+        p.innerHTML = `Left section`;
+        count++;
+      } else if (count === 1 && type === 'type6-right') {
+        div.className += ` imgPoints`;
+        p.innerHTML = `Right section`;
+        count = 0;
+      }
       infoDiv.appendChild(p);
     }
     sectionId = `section${editorCount}`;
     editorCount++;
     div.id = sectionId;
-    div.innerHTML = item.data;
+
+    if (type === 'type6-left' && countType6 === 0 || type === 'type6-right' && countType6 === 1) {
+      const contentClass = document.createElement('div');
+      contentClass.className = 'content';
+      contentClass.innerHTML = item.data;
+      div.appendChild(contentClass);
+      countType6++;
+    } else if (type === 'type6-right' && countType6 === 0) {
+      div.innerHTML = item.data;
+      countType6++;
+    } else {
+      div.innerHTML = item.data;
+      countType6 = 0;
+    }
+
     infoDiv.appendChild(div);
   });
 
@@ -411,15 +440,64 @@ function getSection(type, sectionItems, backgroundColor, position = null) {
   } else {
     document.getElementById('editor-container').appendChild(sectionContainer);
   }
+  console.log()
 
   sectionItems.forEach((item, index) => {
-    const divId = `section${editorCount - sectionItems.length + index}`;
-    addEditor(divId);
+    console.log(item, type);
+    console.log(points);
+    if (points.hasOwnProperty(item.id)) {
+      console.log('entrei');
+      const infoPoints = points[item.id].infoPoints;
+      infoPoints.forEach(point => {
+        // Cria uma nova div
+        const newDiv = document.createElement('div');
+        newDiv.classList.add('cd-more-info');
+        newDiv.classList.add('editable-sectionPoints');
+        newDiv.id = point.id;
+        newDiv.innerHTML = point.data;  // Se precisar que inicialmente esteja escondido
+
+        // Cria e adiciona o botão de fechar
+        const closeButton = document.createElement('button');
+        closeButton.classList.add('btn-close-info');
+        closeButton.innerHTML = '<i class="fa-solid fa-close"></i>';
+        newDiv.appendChild(closeButton);
+
+        // Identifica o elemento DOM correspondente ao item.id
+        console.log(item.id);
+        const itemElement = document.querySelector(`#${item.id}`);
+        if (itemElement) {
+          // Adiciona a nova div ao item atual
+          itemElement.appendChild(newDiv);
+
+          // Chama a função addEditor para adicionar o editor na div
+          addEditor(newDiv.id);
+        } else {
+          console.error('Element not found for item.id:', item.id);
+        }
+      });
+    }
+
+
+    if (type === 'type6-left' && countType6 === 0 || type === 'type6-right' && countType6 === 0) {
+      countType6++
+    } else if (type === 'type6-right' && countType6 === 0) {
+      countType6++
+      pointListCounter++;
+      const divId = `section${editorCount - sectionItems.length + index}`;
+      addEditor(divId);
+    } else {
+      const divId = `section${editorCount - sectionItems.length + index}`;
+      addEditor(divId);
+      countType6 = 0;
+    }
   });
+
 }
 
 function addNewSection(type, imgApi, position = null) {
+  console.log(pointListCounter)
   console.log(imgApi);
+  console.log(editorCount)
   sectionContainer = document.createElement('section');
   sectionContainer.dataset.type = type;
   sectionContainer.id = `section-${sectionCount}`;
@@ -499,11 +577,11 @@ function addNewSection(type, imgApi, position = null) {
 
   if (type === 'type1' || type === 'type2') {
     if (type === 'type1') {
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       p.innerHTML = `100% da div`;
       infoDiv.appendChild(p);
     } else if (type === 'type2') {
-      const p = document.createElement('p');
+      const p = document.createElement('h6');
       p.innerHTML = `75% da div`;
       infoDiv.appendChild(p);
     }
@@ -523,7 +601,7 @@ function addNewSection(type, imgApi, position = null) {
 
     addEditor(div.id);
   } else if (type === 'type3') {
-    const pLeft = document.createElement('p');
+    const pLeft = document.createElement('h6');
     pLeft.innerHTML = `Left section`;
     infoDiv.appendChild(pLeft);
 
@@ -536,7 +614,7 @@ function addNewSection(type, imgApi, position = null) {
     sectionId = `section${editorCount}`;
     editorCount++;
 
-    const pRight = document.createElement('p');
+    const pRight = document.createElement('h6');
     pRight.innerHTML = `Right section`;
     infoDiv.appendChild(pRight);
 
@@ -556,7 +634,7 @@ function addNewSection(type, imgApi, position = null) {
     addEditor(leftDiv.id);
     addEditor(rightDiv.id);
   } else if (type === 'type4') {
-    const pLeft = document.createElement('p');
+    const pLeft = document.createElement('h6');
     pLeft.innerHTML = `Left section`;
     infoDiv.appendChild(pLeft);
 
@@ -569,7 +647,7 @@ function addNewSection(type, imgApi, position = null) {
     sectionId = `section${editorCount}`;
     editorCount++;
 
-    const pCenter = document.createElement('p');
+    const pCenter = document.createElement('h6');
     pCenter.innerHTML = `Center section`;
     infoDiv.appendChild(pCenter);
 
@@ -582,7 +660,7 @@ function addNewSection(type, imgApi, position = null) {
     sectionId = `section${editorCount}`;
     editorCount++;
 
-    const pRight = document.createElement('p');
+    const pRight = document.createElement('h6');
     pRight.innerHTML = `Right section`;
     infoDiv.appendChild(pRight);
 
@@ -621,14 +699,14 @@ function addNewSection(type, imgApi, position = null) {
 
     addEditor(div.id);
   } if (type === 'type6-left' || type === 'type6-right') {
-    const pLeft = document.createElement('p');
+    const pLeft = document.createElement('h6');
     pLeft.innerHTML = `Left section`;
     infoDiv.appendChild(pLeft);
 
     const leftDiv = document.createElement('div');
     const rightDiv = document.createElement('div');
 
-    const pRight = document.createElement('p');
+    const pRight = document.createElement('h6');
     pRight.innerHTML = `Right section`;
     infoDiv.appendChild(pRight);
 
@@ -653,15 +731,16 @@ function addNewSection(type, imgApi, position = null) {
     const contentClass = document.createElement('div');
     contentClass.className = 'content';
 
-    
-  const pointList = `points-list${pointListCounter++}`;
-  const ul = document.createElement('ul');
-  ul.id = pointList;
-  contentClass.appendChild(ul);
+
+    const pointList = `points-list${pointListCounter++}`;
+    console.log(pointList)
+    const ul = document.createElement('ul');
+    ul.id = pointList;
+    contentClass.appendChild(ul);
 
     if (type === 'type6-left') {
       leftDiv.className += ' imgPoints';
-      const response = buildImg(imgApi)
+      const response = buildImg(imgApi, pointList)
       contentClass.appendChild(response);
       leftDiv.appendChild(contentClass);
       rightDiv.innerHTML = content;
@@ -669,11 +748,11 @@ function addNewSection(type, imgApi, position = null) {
       addEditor(rightDiv.id);
     } else if (type === 'type6-right') {
       rightDiv.className += ' imgPoints';
-      const response = buildImg(imgApi)
+      const response = buildImg(imgApi, pointList)
       contentClass.appendChild(response);
       rightDiv.appendChild(contentClass);
       leftDiv.innerHTML = content;
-    
+
       addEditor(leftDiv.id);
     }
   }
@@ -685,48 +764,69 @@ function addNewSection(type, imgApi, position = null) {
   });
 }
 
-function imageClickHandler(event) {
+function imageClickHandler(event, pointList) {
+  const pointList2 = document.getElementById(pointList);
   const image = event.target;
-  const rect = image.getBoundingClientRect();
 
-  // Calcula as coordenadas relativas do clique na imagem
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
+  const parentSection = image.closest('.editable-section');
+  if (parentSection) {
+    const rect = image.getBoundingClientRect();
 
-  // Calcula as coordenadas em porcentagem
-  const xPercent = (x / rect.width) * 100;
-  const yPercent = (y / rect.height) * 100;
+    // Calcula as coordenadas relativas do clique na imagem
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
-  console.log(`X: ${xPercent}%, Y: ${yPercent}%`);
+    // Calcula as coordenadas em porcentagem
+    const xPercent = (x / rect.width) * 100;
+    const yPercent = (y / rect.height) * 100;
 
-  // Cria um novo ponto
-  const pointId = `point-${pointCounter++}`;
-  const point = document.createElement('li');
-  point.classList.add('cd-single-point');
-  point.id = pointId;
-  point.style.left = `${xPercent}%`;
-  point.style.top = `${yPercent}%`;
+    console.log(`X: ${xPercent}%, Y: ${yPercent}%`);
 
-  // Cria o link dentro do ponto
-  const link = document.createElement('a');
-  link.classList.add('cd-img-replace', 'info');
-  link.href = "#0";
-  link.setAttribute('data-target', `editorjs-info-${pointId}`);
-  link.setAttribute('aria-label', 'Más información');
-  link.innerHTML = '<i class="fa-solid fa-info"></i>';
-  link.style.cursor = 'pointer';
-  point.appendChild(link);
+    // Cria um novo ponto
+    const pointId = `point-${pointCounter}`;
+    const point = document.createElement('li');
+    point.classList.add('cd-single-point');
+    point.id = pointId;
+    point.style.left = `${xPercent}%`;
+    point.style.top = `${yPercent}%`;
 
-  // Cria a animação de pulsação
-  const pulse = document.createElement('div');
-  pulse.classList.add('cd-pulse');
-  point.appendChild(pulse);
+    const pInfoPointer = document.createElement('p');
+    pInfoPointer.innerHTML = `Texto pointer ${pointCounter}`;
 
-  // Adiciona o ponto à lista
-  document.getElementById('points-list').appendChild(point);
+    const divInfoPointer = document.createElement('div');
+    const infoPointerId = `info-pointer-${pointCounter}`;
+    divInfoPointer.className = 'editable-sectionPoints';
+    divInfoPointer.id = infoPointerId;
+
+    // Cria o link dentro do ponto
+    const link = document.createElement('a');
+    link.classList.add('cd-img-replace', 'info');
+    link.href = "#0";
+    link.setAttribute('data-target', infoPointerId);
+    link.setAttribute('aria-label', 'Más información');
+    link.innerHTML = `<i class="fa-solid fa-info"></i>${pointCounter}`;
+    link.style.cursor = 'pointer';
+    point.appendChild(link);
+
+    // Cria a animação de pulsação
+    const pulse = document.createElement('div');
+    pulse.classList.add('cd-pulse');
+    point.appendChild(pulse);
+    pointCounter++;
+    // Adiciona o ponto à lista
+    console.log(`Adding point to ${pointList}`);
+    pointList2.appendChild(point);
+    parentSection.appendChild(pInfoPointer);
+    parentSection.appendChild(divInfoPointer);
+
+
+    addEditor(divInfoPointer.id);
+  } else {
+    console.log('Parent section not found');
+  }
 }
 
-function buildImg(imgApi) {
+function buildImg(imgApi, pointList) {
   const pictureElement = document.createElement('picture');
 
   Object.keys(imgApi.srcset).forEach(size => {
@@ -741,7 +841,7 @@ function buildImg(imgApi) {
   imgElement.setAttribute('alt', 'Imagem carregada');
   pictureElement.appendChild(imgElement);
 
-  imgElement.addEventListener('click', imageClickHandler);
+  imgElement.addEventListener('click', (event) => imageClickHandler(event, pointList));
 
   return pictureElement;
 }
@@ -773,14 +873,17 @@ saveBt.addEventListener('click', async function () {
   let baseUrl = `${urlBase}pages/${namePage}/`;
   try {
     const content = {};
+    const contentPoints = {};
     let sectionIndex = 0;
+    let sectionIndexPoints = 0;
 
     const sections = document.getElementById('editor-container').querySelectorAll('section');
     const title = document.getElementById('pageTitle').value;
     const description = document.getElementById('pageDescription').value;
+    const metaTitle = document.getElementById('metaTitle').value;
+
 
     sections.forEach((section) => {
-      console.log(section)
       const sectionType = section.dataset.type;
       const sectionColor = section.style.backgroundColor || '#fbf8f8';
       const editableSections = section.querySelectorAll('.editable-section');
@@ -792,13 +895,33 @@ saveBt.addEventListener('click', async function () {
       };
 
       editableSections.forEach((editableSection) => {
-        console.log(editableSection)
         let editorData;
+        console.log(editableSection)
+
         const editorId = editableSection.id;
         if (editableSection.classList.contains('imgPoints')) {
           const contentHtml = editableSection.querySelector('.content').innerHTML;
           editorData = contentHtml;
-        }else{
+
+          const editorsPoints = editableSection.querySelectorAll('.editable-sectionPoints');
+          const editorsPointsArray = Array.from(editorsPoints);
+
+          // Inicialize contentPoints usando editorId em vez de sectionIndex
+          contentPoints[editorId] = {
+            infoPoints: []
+          };
+          console.log(editorsPoints)
+          editorsPointsArray.forEach((editorPoint) => {
+            console.log('entrei aquui')
+            const editorPointId = editorPoint.id;
+            const editorDataPoints = editors[editorPointId].getData();
+
+            contentPoints[editorId].infoPoints.push({
+              id: editorPointId,
+              data: editorDataPoints
+            });
+          });
+        } else {
           editorData = editors[editorId].getData();
         }
 
@@ -810,25 +933,26 @@ saveBt.addEventListener('click', async function () {
 
       sectionIndex++;
     });
-    console.log(content)
-
+    console.log(contentPoints)
 
     const section = "TESTEW";
-/* 
+
     const sectionUrl = baseUrl + section;
     const headers = {
       'Content-Type': 'application/json',
     };
 
-    if (token) {
+/*     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     const requestBody = {
       namePage: namePage,
       section: section,
       content: content,
+      contentPoints: contentPoints,
       title: title,
       description: description,
+      metaTitle: metaTitle
     }; */
 
     const response = await fetch(sectionUrl, {
@@ -849,7 +973,6 @@ saveBt.addEventListener('click', async function () {
   }
 
 });
-console.log(editors);
 
 // Initialize Sortable
 new Sortable(document.getElementById('editor-container'), {
@@ -858,8 +981,6 @@ new Sortable(document.getElementById('editor-container'), {
     reorderSections(evt.oldIndex, evt.newIndex);
   }
 });
-
-
 
 function reorderSections(oldIndex, newIndex) {
   const editorContainer = document.getElementById('editor-container');

@@ -3,11 +3,15 @@ const namePage = 'TesteCKEDITOR2'
 
 document.addEventListener('DOMContentLoaded', async function () {
   await data().then(dataFromBackend => {
+    console.log(dataFromBackend)
     if (dataFromBackend && dataFromBackend.success && dataFromBackend.data.length > 0) {
       const description = dataFromBackend.data[0].description;
       const title = dataFromBackend.data[0].title
+      const metaTitle = dataFromBackend.data[0].metaTitle
+      const contentPoints = dataFromBackend.data[0].contentPoints;
+      const contentPointsString = JSON.parse(contentPoints);
 
-      document.title = title;
+      document.title = metaTitle;
 
       const titleH1 = document.getElementById('title');
       titleH1.innerHTML = title;
@@ -50,25 +54,29 @@ document.addEventListener('DOMContentLoaded', async function () {
         /* const elementCount = elements.length; */
 
         elements.forEach((element, index) => {
+          console.log(element, sectionData.type);
           const colDiv = document.createElement('div');
           colDiv.className = `editable-section`;
-          colDiv.id = `section-${sectionIndex}-${index}`;
-          colDiv.innerHTML = element.data;
+          colDiv.id = `${element.id}`;
 
           if (sectionData.type === 'type1') {
             colDiv.className += ' col-md-12';
+            colDiv.innerHTML = element.data;
           } else if (sectionData.type === 'type2') {
             colDiv.className += ' col-md-8';
+            colDiv.innerHTML = element.data;
           } else if (sectionData.type === 'type3') {
             colDiv.className += ' col-md-6';
+            colDiv.innerHTML = element.data;
           } else if (sectionData.type === 'type4') {
             colDiv.className += ' col-md-4';
+            colDiv.innerHTML = element.data;
           } else if (sectionData.type === 'type5') {
             colDiv.className += ' col-md-8';
             const modalContent = `<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                      <div class="modal-content">
-                                        <div class="modal-header">
+            <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
                                           <h5>Entre em contacto connosco</h5>
                                           <button id="closeModalContact1" type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
@@ -146,6 +154,39 @@ document.addEventListener('DOMContentLoaded', async function () {
             const script = document.createElement('script');
             script.src = 'assets/javascript/contact.js';
             document.body.appendChild(script);
+            colDiv.innerHTML = element.data;
+          } else if (sectionData.type === 'type6-left' || sectionData.type === 'type6-right') {
+            colDiv.className += ' col-md-6 imgPoints'; // TODO ver logica de ter imgPoints so onde for a imagem
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `content`;
+            contentDiv.innerHTML = element.data;
+            colDiv.appendChild(contentDiv)
+          }
+
+          //Colocar os points nas sections corretas
+          if (contentPointsString.hasOwnProperty(colDiv.id)) {
+            const infoPoints = contentPointsString[colDiv.id].infoPoints;
+
+            infoPoints.forEach(point => {
+              const closeButton = document.createElement('button');
+              closeButton.classList.add('btn-close-info');
+              closeButton.innerHTML = '<i class="fa-solid fa-close"></i>';
+          
+              const newDiv = document.createElement('div');
+              newDiv.classList.add('cd-more-info');
+              newDiv.id = point.id;
+          
+              newDiv.appendChild(closeButton);
+              
+              const contentDiv = document.createElement('div');
+              contentDiv.innerHTML = point.data;
+              newDiv.appendChild(contentDiv);
+              
+              colDiv.appendChild(newDiv);
+          });
+
+          } else {
+            console.log('No contentPoints found for id:', contentPointsString);
           }
           rowDiv.appendChild(colDiv);
         });
@@ -156,6 +197,55 @@ document.addEventListener('DOMContentLoaded', async function () {
       });
     }
   });
+
+  function toggleMoreInfo(event) {
+    console.log('clicquei')
+    var button = event.currentTarget;
+    var targetId = button.getAttribute('data-target');
+    var targetMoreInfo = document.getElementById(targetId);
+
+    if (targetMoreInfo) {
+      var allMoreInfos = document.querySelectorAll('.cd-more-info');
+
+      allMoreInfos.forEach(function (info) {
+        if (info !== targetMoreInfo) {
+          info.style.display = 'none';
+          var relatedButton = document.querySelector('[data-target="' + info.id + '"]');
+          if (relatedButton) {
+            relatedButton.innerHTML = '<i class="fa-solid fa-info"></i>';
+          }
+        }
+      });
+
+      targetMoreInfo.style.display = (targetMoreInfo.style.display === 'block') ? 'none' : 'block';
+      /* button.innerHTML = (targetMoreInfo.style.display === 'block') ? '<i class="fa-solid fa-close"></i>' : '<i class="fa-solid fa-info"></i>'; */
+    }
+  }
+
+  var buttons = document.querySelectorAll('.cd-single-point a.info');
+  buttons.forEach(function (button) {
+    console.log(button)
+    button.innerHTML = '<i class="fa-solid fa-info"></i>';
+    button.addEventListener('click', toggleMoreInfo);
+  });
+
+  const buttonsCloseInfo = document.querySelectorAll('.btn-close-info');
+
+  // Adiciona um event listener para cada botão
+  buttonsCloseInfo.forEach(button => {
+    button.addEventListener('click', function () {
+      hideInfos();
+     /*  changeIcon() */
+    });
+  });
+
+  function hideInfos() {
+    const infos = document.querySelectorAll('.cd-more-info');
+    infos.forEach(info => {
+      info.style.display = 'none';
+    });
+  }
+  
 });
 
 async function data() {
