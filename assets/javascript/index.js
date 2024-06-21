@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         /* const elementCount = elements.length; */
 
         elements.forEach((element, index) => {
-          console.log(element, sectionData.type);
           const colDiv = document.createElement('div');
           colDiv.className = `editable-section`;
           colDiv.id = `${element.id}`;
@@ -72,6 +71,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             colDiv.className += ' col-md-4';
             colDiv.innerHTML = element.data;
           } else if (sectionData.type === 'type5') {
+console.log('entrei', sectionData)
             colDiv.className += ' col-md-8';
             const modalContent = `<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
@@ -149,12 +149,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             buttonToOpenModal.className = 'btn btn-primary';
             buttonToOpenModal.setAttribute('data-toggle', 'modal');
             buttonToOpenModal.setAttribute('data-target', `#contactModal`);
-
-            colDiv.appendChild(buttonToOpenModal);
+            
+            console.log(buttonToOpenModal, colDiv)
             const script = document.createElement('script');
             script.src = 'assets/javascript/contact.js';
             document.body.appendChild(script);
             colDiv.innerHTML = element.data;
+            colDiv.appendChild(buttonToOpenModal);
+
+
+
           } else if (sectionData.type === 'type6-left' || sectionData.type === 'type6-right') {
             colDiv.className += ' col-md-6 imgPoints'; // TODO ver logica de ter imgPoints so onde for a imagem
             const contentDiv = document.createElement('div');
@@ -199,7 +203,6 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
 
   function toggleMoreInfo(event) {
-    console.log('clicquei')
     var button = event.currentTarget;
     var targetId = button.getAttribute('data-target');
     var targetMoreInfo = document.getElementById(targetId);
@@ -224,7 +227,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   var buttons = document.querySelectorAll('.cd-single-point a.info');
   buttons.forEach(function (button) {
-    console.log(button)
     button.innerHTML = '<i class="fa-solid fa-info"></i>';
     button.addEventListener('click', toggleMoreInfo);
   });

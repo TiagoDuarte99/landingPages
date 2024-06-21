@@ -1,4 +1,4 @@
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTg5MDIwODQsImV4cCI6MTcxODkwNTY4NCwibmJmIjoxNzE4OTAyMDg0LCJqdGkiOiJFM1AxYk9uNFdCamRNcjhpIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.rqHsbmyQ6KLN-IGHBOpHS949kE3vylyecUoRMu2vRRE';
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTkwMDU1NzMsImV4cCI6MTcxOTAwOTE3MywibmJmIjoxNzE5MDA1NTczLCJqdGkiOiJDOEU2eXpqVm5VVE9pakpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.RydYH4AluwPumoyqsQG8uRAq2UKyE2Am6A_Dcfey_UU';
 
 const urlBase = 'http://localhost:8000/';/*https://landingpages.svr6.appsfarma.com/  */
 const namePage = 'TesteCKEDITOR2'
@@ -11,6 +11,7 @@ let editors = {};
 let sectionContainer;
 let pointCounter = 0;
 let pointListCounter = 0;
+let contactForm = 0;
 
 const colors = {
   'primary': '#101980',
@@ -25,11 +26,10 @@ const colors = {
 
 document.addEventListener('DOMContentLoaded', async function () {
   await data().then(dataFromBackend => {
+    console.log(dataFromBackend)
     if (dataFromBackend && dataFromBackend.success && dataFromBackend.data.length > 0) {
       const contentData = dataFromBackend.data[0].content;
       const contentPoints = dataFromBackend.data[0].contentPoints;
-      console.log(contentData);
-      console.log(contentPoints);
       const contentPointsString = JSON.parse(contentPoints);
 
       contentData.forEach((item, index) => {
@@ -130,16 +130,20 @@ document.addEventListener('DOMContentLoaded', async function () {
     additionalOptions.style.display = 'none';
     const sectionType = document.querySelector('input[name="sectionType"]:checked');
     if (sectionType) {
-      if (sectionType.value === 'type6') {
-        let sectionTypeValue = sectionType.value;
-        const alignmentSelect = document.getElementById('alignment');
-        const alignmentValue = alignmentSelect.value;
-        console.log(alignmentValue)
-        sectionTypeValue = sectionTypeValue + '-' + alignmentValue
-        addNewSection(sectionTypeValue, imgApi);
+      if (sectionType.value === 'type5' && contactForm === 1) {
+        alert('Já tem um formulario de contacto');
       } else {
-        const sectionTypeValue = sectionType.value;
-        addNewSection(sectionTypeValue);
+        if (sectionType.value === 'type6') {
+          let sectionTypeValue = sectionType.value;
+          const alignmentSelect = document.getElementById('alignment');
+          const alignmentValue = alignmentSelect.value;
+          console.log(alignmentValue)
+          sectionTypeValue = sectionTypeValue + '-' + alignmentValue
+          addNewSection(sectionTypeValue, imgApi);
+        } else {
+          const sectionTypeValue = sectionType.value;
+          addNewSection(sectionTypeValue);
+        }
       }
     } else {
       console.error('Nenhum tipo de seção selecionado.');
@@ -186,14 +190,72 @@ function openConfirmationModal(sectionId) {
   $(`#confirmDelete-${sectionId}`).click(function () {
     const sectionToDelete = document.getElementById(`section-${sectionId}`);
     if (sectionToDelete) {
-      console.log(sectionToDelete)
-      sectionToDelete.remove();
-      const editableSections = document.querySelectorAll('.editable-section');
-      editableSections.forEach((section, index) => {
-        console.log(index, section)
-        section.id = `section-${index}`;
-        editorCount = index;
+      const editorsToDelete = sectionToDelete.querySelectorAll('.editable-section');
+      const editorIdsToDelete = [];
+
+      editorsToDelete.forEach(editor => {
+        editorIdsToDelete.push(editor.id);
       });
+
+      // Remover editores do objeto 'editors'
+      editorIdsToDelete.forEach(editorId => {
+        if (editors.hasOwnProperty(editorId)) {
+          delete editors[editorId];
+        }
+      });
+
+      const dataTypeValue = sectionToDelete.dataset.type;
+      if (dataTypeValue === 'type5') {
+        contactForm = 0;
+      }
+
+      sectionToDelete.remove();
+
+      const editableSections = document.querySelectorAll('.editable-section');
+      const newEditors = {};
+      let i = 0;
+
+      editableSections.forEach((section) => {
+        if (!section.classList.contains('imgPoints')) {
+          const newId = `section${i++}`;
+          const oldId = section.id;
+          section.id = newId;
+
+          if (editors.hasOwnProperty(oldId)) {
+            editors[oldId].sourceElement.id = newId;
+            newEditors[newId] = editors[oldId];
+          }
+        }
+      });
+
+      i = 0;
+      editableSections.forEach((section) => {
+        if (!section.classList.contains('imgPoints')) {
+          const newId = `section${i++}`;
+          if (newEditors.hasOwnProperty(newId)) {
+            newEditors[newId].sourceElement.id = newId;
+          }
+        }
+      });
+      console.log(editors)
+      const infoPointerElements = [];
+      Object.keys(editors).forEach(key => {
+        if (key.startsWith('info-pointer')) {
+          infoPointerElements.push(editors[key]);
+        }
+      });
+      console.log(infoPointerElements)
+
+      // Substituir o objeto 'editors' pelo novo objeto com IDs atualizados
+      editors = {
+        ...newEditors, // Espalha os elementos de 'newEditors'
+        ...infoPointerElements.reduce((acc, element) => {
+          console.log(element,     acc)
+          acc[element.sourceElement.id] = element;
+          return acc;
+        }, {})
+      };
+      console.log(editors)
     }
     $(`#deleteModal-${sectionId}`).modal('hide');
   });
@@ -252,7 +314,7 @@ class MyUploadAdapter {
                                     <source srcset="${response.data.srcset['320w']}" media="(max-width: 320px)">
                                     <source srcset="${response.data.srcset['480w']}" media="(max-width: 480px)">
                                     <source srcset="${response.data.srcset['800w']}" media="(max-width: 800px)">
-                                    <img src="${response.data.url}" alt="Imagem carregada">
+                                    <img src="${response.data.url}" alt="Imagem carregada" loading="lazy">
                                   </picture>
                                 `;
               const viewFragment = this.editor.data.processor.toView(pictureHtml);
@@ -389,12 +451,12 @@ function getSection(type, sectionItems, backgroundColor, points, position = null
       }
       infoDiv.appendChild(p);
     } if (type === 'type5') {
+      contactForm = 1;
       div.className = `editable-section col-12 mt-4`;
       const p = document.createElement('h6');
       p.innerHTML = `Contact Form`;
       infoDiv.appendChild(p);
     } else if (type === 'type6-left' || type === 'type6-right') {
-      console.log(type)
       div.className = `editable-section col-md-6 mt-4`;
       const p = document.createElement('h6');
       if (count === 0 && type === 'type6-left') {
@@ -443,10 +505,7 @@ function getSection(type, sectionItems, backgroundColor, points, position = null
   console.log()
 
   sectionItems.forEach((item, index) => {
-    console.log(item, type);
-    console.log(points);
     if (points.hasOwnProperty(item.id)) {
-      console.log('entrei');
       const infoPoints = points[item.id].infoPoints;
       infoPoints.forEach(point => {
         // Cria uma nova div
@@ -463,7 +522,6 @@ function getSection(type, sectionItems, backgroundColor, points, position = null
         newDiv.appendChild(closeButton);
 
         // Identifica o elemento DOM correspondente ao item.id
-        console.log(item.id);
         const itemElement = document.querySelector(`#${item.id}`);
         if (itemElement) {
           // Adiciona a nova div ao item atual
@@ -680,6 +738,7 @@ function addNewSection(type, imgApi, position = null) {
     addEditor(centerDiv.id);
     addEditor(rightDiv.id);
   } if (type === 'type5') {
+    contactForm = 1;
     const p = document.createElement('p');
     p.innerHTML = `Contact Form`;
     infoDiv.appendChild(p);
@@ -896,7 +955,6 @@ saveBt.addEventListener('click', async function () {
 
       editableSections.forEach((editableSection) => {
         let editorData;
-        console.log(editableSection)
 
         const editorId = editableSection.id;
         if (editableSection.classList.contains('imgPoints')) {
@@ -922,6 +980,7 @@ saveBt.addEventListener('click', async function () {
             });
           });
         } else {
+          console.log(editors[editorId])
           editorData = editors[editorId].getData();
         }
 
@@ -942,7 +1001,7 @@ saveBt.addEventListener('click', async function () {
       'Content-Type': 'application/json',
     };
 
-/*     if (token) {
+    if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     const requestBody = {
@@ -953,7 +1012,7 @@ saveBt.addEventListener('click', async function () {
       title: title,
       description: description,
       metaTitle: metaTitle
-    }; */
+    };
 
     const response = await fetch(sectionUrl, {
       method: 'PUT',
