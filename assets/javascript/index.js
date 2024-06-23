@@ -1,5 +1,5 @@
 const urlBase = 'http://localhost:8000/';/*https://landingpages.svr6.appsfarma.com/  */
-const namePage = 'TesteCKEDITOR2'
+const namePage = 'TesteCKEDITOR3'
 
 document.addEventListener('DOMContentLoaded', async function () {
   await data().then(dataFromBackend => {
@@ -273,8 +273,11 @@ async function data() {
   }
 }
 
-let saveBt = document.getElementById('edit-button');
-saveBt.addEventListener('click', async function () {
+let editBt1 = document.getElementById('edit-button');
+editBt1.addEventListener('click', async function () {
   window.location.href = 'edit.html';
 });
-
+let editBt2 = document.getElementById('edit-button2');
+editBt2.addEventListener('click', async function () {
+  window.location.href = 'edit2.html';
+});
