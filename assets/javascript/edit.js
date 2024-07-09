@@ -1,4 +1,4 @@
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTkwMDU1NzMsImV4cCI6MTcxOTAwOTE3MywibmJmIjoxNzE5MDA1NTczLCJqdGkiOiJDOEU2eXpqVm5VVE9pakpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.RydYH4AluwPumoyqsQG8uRAq2UKyE2Am6A_Dcfey_UU';
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTk3MzY5MTksImV4cCI6MTcxOTc0MDUxOSwibmJmIjoxNzE5NzM2OTE5LCJqdGkiOiJhU3BwVWVYdHd3SXhyRGVxIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.wI7WZNLMmpSsravfbK-kC9h0xlDn8cg9Tcfx3YZ_Clg';
 
 const urlBase = 'http://localhost:8000/';/*https://landingpages.svr6.appsfarma.com/  */
 const namePage = 'TesteCKEDITOR2'
@@ -320,6 +320,7 @@ class MyUploadAdapter {
               const viewFragment = this.editor.data.processor.toView(pictureHtml);
               const modelFragment = this.editor.data.toModel(viewFragment);
               this.editor.model.insertContent(modelFragment);
+              console.log(this.editor.getData());
 
               resolve({
                 default: response.data.url

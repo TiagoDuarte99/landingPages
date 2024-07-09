@@ -25,6 +25,23 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
       metaDescription.setAttribute('content', description);
 
+
+      // Atualiza as meta tags Open Graph
+      const ogTitleMeta = document.querySelector('meta[property="og:title"]');
+      if (ogTitleMeta) {
+        ogTitleMeta.setAttribute('content', title);
+      } 
+
+      const ogDescriptionMeta = document.querySelector('meta[property="og:description"]');
+      if (ogDescriptionMeta) {
+        ogDescriptionMeta.setAttribute('content', description);
+      } 
+
+      const ogSiteNameMeta = document.querySelector('meta[property="og:site_name"]');
+      if (ogSiteNameMeta) {
+        ogSiteNameMeta.setAttribute('content', metaTitle);
+      } 
+
       const contentData = dataFromBackend.data[0].content;
       // Limpar o container antes de adicionar as novas seções
       const displayContainer = document.getElementById('display-container');
@@ -82,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                   colDiv.className += ' col-md-4';
                   colDiv.innerHTML = element.data;
                 } else if (type === 'type5') {
-                  colDiv.className += ' col-md-8';
+                  colDiv.className += ' col-md-8 centerDiv';
                   const modalContent = `<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
                                               <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -244,7 +261,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   buttonsCloseInfo.forEach(button => {
     button.addEventListener('click', function () {
       hideInfos();
-     /*  changeIcon() */
+      /*  changeIcon() */
     });
   });
 
@@ -254,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       info.style.display = 'none';
     });
   }
-  
+
 });
 
 async function data() {
@@ -282,9 +299,5 @@ async function data() {
 
 let editBt1 = document.getElementById('edit-button');
 editBt1.addEventListener('click', async function () {
-  window.location.href = 'edit.html';
-});
-let editBt2 = document.getElementById('edit-button2');
-editBt2.addEventListener('click', async function () {
   window.location.href = 'edit2.html';
 });

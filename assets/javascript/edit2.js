@@ -1,4 +1,4 @@
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTkxMzYyMTEsImV4cCI6MTcxOTEzOTgxMSwibmJmIjoxNzE5MTM2MjExLCJqdGkiOiJqWnRncTh2c1o3ODVwMWR2Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.AFE9F7Pm4XPgjv20lfEZQsXL3STqoUEb7t4wtor_uQk';
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXV0aHMvbG9naW4iLCJpYXQiOjE3MTk1MTc1MjUsImV4cCI6MTcxOTUyMTEyNSwibmJmIjoxNzE5NTE3NTI1LCJqdGkiOiJMeElEMEVOaXhiR1FLVFN3Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.jY0o5irnUFmcZT06_ARuOnfEGZFvC0cYg2sEB-6wl_o';
 
 const urlBase = 'http://localhost:8000/';/*https://landingpages.svr6.appsfarma.com/  */
 const namePage = 'TesteCKEDITOR3'
@@ -7,7 +7,6 @@ let editorCount = 0;
 let sectionCount = 0;
 let sectionId;
 let editors = {};
-/* let editorsArray = {}; */
 let sectionContainer;
 let pointCounter = 0;
 let pointListCounter = 0;
@@ -175,11 +174,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       if (type === 'type1' || type === 'type2') {
         if (type === 'type1') {
-          const p = document.createElement('h6');
+          const p = document.createElement('h3');
           p.innerHTML = `100% da div`;
           infoDiv.appendChild(p);
         } else if (type === 'type2') {
-          const p = document.createElement('h6');
+          const p = document.createElement('h3');
           p.innerHTML = `75% da div`;
           infoDiv.appendChild(p);
         }
@@ -199,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         addEditor(div.id);
       } else if (type === 'type3') {
-        const pLeft = document.createElement('h6');
+        const pLeft = document.createElement('h3');
         pLeft.innerHTML = `Left section`;
         infoDiv.appendChild(pLeft);
 
@@ -212,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         sectionId = `section${editorCount}`;
         editorCount++;
 
-        const pRight = document.createElement('h6');
+        const pRight = document.createElement('h3');
         pRight.innerHTML = `Right section`;
         infoDiv.appendChild(pRight);
 
@@ -232,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         addEditor(leftDiv.id);
         addEditor(rightDiv.id);
       } else if (type === 'type4') {
-        const pLeft = document.createElement('h6');
+        const pLeft = document.createElement('h3');
         pLeft.innerHTML = `Left section`;
         infoDiv.appendChild(pLeft);
 
@@ -245,7 +244,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         sectionId = `section${editorCount}`;
         editorCount++;
 
-        const pCenter = document.createElement('h6');
+        const pCenter = document.createElement('h3');
         pCenter.innerHTML = `Center section`;
         infoDiv.appendChild(pCenter);
 
@@ -258,7 +257,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         sectionId = `section${editorCount}`;
         editorCount++;
 
-        const pRight = document.createElement('h6');
+        const pRight = document.createElement('h3');
         pRight.innerHTML = `Right section`;
         infoDiv.appendChild(pRight);
 
@@ -298,14 +297,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         addEditor(div.id);
       } if (type === 'type6-left' || type === 'type6-right') {
-        const pLeft = document.createElement('h6');
+        const pLeft = document.createElement('h3');
         pLeft.innerHTML = `Left section`;
         infoDiv.appendChild(pLeft);
 
         const leftDiv = document.createElement('div');
         const rightDiv = document.createElement('div');
 
-        const pRight = document.createElement('h6');
+        const pRight = document.createElement('h3');
         pRight.innerHTML = `Right section`;
         infoDiv.appendChild(pRight);
 
@@ -356,15 +355,6 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     }
     $('#exampleModal').modal('hide');
-  });
-
-
-  document.querySelectorAll('.delete-button').forEach(button => {
-    button.addEventListener('click', () => {
-      const buttonId = button.id;
-      const sectionId = buttonId.split('-')[1];
-      openConfirmationModal(sectionId);
-    });
   });
 
   document.getElementById('confirmDeleteButton').addEventListener('click', () => {
@@ -465,7 +455,6 @@ function openConfirmationModal(sectionId) {
       editors = {
         ...newEditors, // Espalha os elementos de 'newEditors'
         ...infoPointerElements.reduce((acc, element) => {
-          console.log(element, acc)
           acc[element.sourceElement.id] = element;
           return acc;
         }, {})
@@ -478,6 +467,7 @@ function openConfirmationModal(sectionId) {
 
 function addEditor(sectionId) {
   const element = document.querySelector(`#${sectionId}`);
+  console.log('entrei')
   ClassicEditor
     .create(element, {
       extraPlugins: [CustomUploadAdapterPlugin]
@@ -523,6 +513,7 @@ class MyUploadAdapter {
           withCredentials: false,
         })
           .then(response => {
+            console.log('response')
             if (response.data && response.data.url) {
               const pictureHtml = `
                                   <picture>
@@ -584,7 +575,8 @@ function getSection(elements, backgroundColor, points, position = null) {
 
   const deleteButton = document.createElement('button');
   deleteButton.innerHTML = 'Apagar Seção';
-  deleteButton.className = 'delete-button';
+  deleteButton.className = 'delete-button btn btn-danger';
+
   buttonsSection.appendChild(deleteButton);
   const sectionToDelete = sectionCount;
   // Adiciona evento de clique ao botão para apagar a seção
@@ -687,9 +679,6 @@ function getSection(elements, backgroundColor, points, position = null) {
 
       document.body.insertAdjacentHTML('beforeend', modalContentDeleteRow);
 
-
-
-
       // Adicionar ouvinte de evento para excluir a rowDiv2 quando o botão for clicado
       deleteButton.addEventListener('click', () => {
         $('#confirmationModal').data('rowDiv', rowDiv2).modal('show');
@@ -704,17 +693,13 @@ function getSection(elements, backgroundColor, points, position = null) {
       /* content = 'Insira o texto'; */
       let countType6 = 0;
 
-
-
-
-
       if (type === 'type1' || type === 'type2') {
         if (type === 'type1') {
-          const p = document.createElement('h6');
+          const p = document.createElement('h3');
           p.innerHTML = `100% da div`;
           infoDiv.appendChild(p);
         } else if (type === 'type2') {
-          const p = document.createElement('h6');
+          const p = document.createElement('h3');
           p.innerHTML = `75% da div`;
           infoDiv.appendChild(p);
         }
@@ -735,7 +720,7 @@ function getSection(elements, backgroundColor, points, position = null) {
 
         addEditor(div.id);
       } else if (type === 'type3') {
-        const pLeft = document.createElement('h6');
+        const pLeft = document.createElement('h3');
         pLeft.innerHTML = `Left section`;
         infoDiv.appendChild(pLeft);
 
@@ -750,7 +735,7 @@ function getSection(elements, backgroundColor, points, position = null) {
         sectionId = `section${editorCount}`;
         editorCount++;
 
-        const pRight = document.createElement('h6');
+        const pRight = document.createElement('h3');
         pRight.innerHTML = `Right section`;
         infoDiv.appendChild(pRight);
 
@@ -772,7 +757,7 @@ function getSection(elements, backgroundColor, points, position = null) {
         addEditor(leftDiv.id);
         addEditor(rightDiv.id);
       } else if (type === 'type4') {
-        const pLeft = document.createElement('h6');
+        const pLeft = document.createElement('h3');
         pLeft.innerHTML = `Left section`;
         infoDiv.appendChild(pLeft);
 
@@ -786,7 +771,7 @@ function getSection(elements, backgroundColor, points, position = null) {
         sectionId = `section${editorCount}`;
         editorCount++;
 
-        const pCenter = document.createElement('h6');
+        const pCenter = document.createElement('h3');
         pCenter.innerHTML = `Center section`;
         infoDiv.appendChild(pCenter);
 
@@ -801,7 +786,7 @@ function getSection(elements, backgroundColor, points, position = null) {
         sectionId = `section${editorCount}`;
         editorCount++;
 
-        const pRight = document.createElement('h6');
+        const pRight = document.createElement('h3');
         pRight.innerHTML = `Right section`;
         infoDiv.appendChild(pRight);
 
@@ -844,14 +829,14 @@ function getSection(elements, backgroundColor, points, position = null) {
 
         addEditor(div.id);
       } if (type === 'type6-left' || type === 'type6-right') {
-        const pLeft = document.createElement('h6');
+        const pLeft = document.createElement('h3');
         pLeft.innerHTML = `Left section`;
         infoDiv.appendChild(pLeft);
 
         const leftDiv = document.createElement('div');
         const rightDiv = document.createElement('div');
 
-        const pRight = document.createElement('h6');
+        const pRight = document.createElement('h3');
         pRight.innerHTML = `Right section`;
         infoDiv.appendChild(pRight);
 
@@ -875,7 +860,6 @@ function getSection(elements, backgroundColor, points, position = null) {
 
         const contentClass = document.createElement('div');
         contentClass.className = 'content';
-        console.log(contentClass);
 
 
 /*         const pointList = `points-list${pointListCounter++}`;
@@ -884,11 +868,24 @@ function getSection(elements, backgroundColor, points, position = null) {
         ul.id = pointList;
         contentClass.appendChild(ul); */
 
+
+
         if (type === 'type6-left') {
-          leftDiv.className += ' imgPoints content';
+          leftDiv.className += ' imgPoints';
+          leftDiv.appendChild(contentClass);
           contentEditor = item.elements[i].data
-          leftDiv.innerHTML = contentEditor;
-       /*    leftDiv.appendChild(contentClass); */
+          contentClass.innerHTML = contentEditor;
+
+          const imgElement = contentClass.querySelector('img');
+          const pointList = contentClass.querySelector('ul');
+          const pointListId = pointList.id;
+          console.log(pointListId)
+          pointListCounter++;
+          
+          imgElement.addEventListener('click', (event) => {
+            imageClickHandler(event, pointListId);
+          });
+              
           i++;
           contentEditor = item.elements[i].data;
           rightDiv.innerHTML = contentEditor;
@@ -898,12 +895,23 @@ function getSection(elements, backgroundColor, points, position = null) {
           contentEditor = item.elements[i].data;
           leftDiv.innerHTML = contentEditor;
           i++;
+        
           rightDiv.className += ' imgPoints';
+          rightDiv.appendChild(contentClass);
           contentEditor = item.elements[i].data
-          rightDiv.innerHTML = contentEditor;
-          /* rightDiv.appendChild(contentClass); */
+          contentClass.innerHTML = contentEditor;
           i = 0;
 
+          
+          const imgElement = contentClass.querySelector('img');
+          const pointList = contentClass.querySelector('ul');
+          const pointListId = pointList.id;
+          console.log(pointListId)
+          pointListCounter++;
+          console.log(pointList);
+          imgElement.addEventListener('click', (event) => {
+            imageClickHandler(event, pointListId);
+          });
           addEditor(leftDiv.id);
         }
 
@@ -912,10 +920,11 @@ function getSection(elements, backgroundColor, points, position = null) {
         elements.forEach((item, index) => {
           console.log(item[0].elements[index].id)
           const id = item[0].elements[index].id
-          console.log(points)
+          
+          console.log(item[0].elements[index].id)
           if (points.hasOwnProperty(id)) {
+
             const infoPoints = points[id].infoPoints;
-          console.log(infoPoints)
 
             infoPoints.forEach(point => {
               // Cria uma nova div
@@ -923,7 +932,8 @@ function getSection(elements, backgroundColor, points, position = null) {
               newDiv.classList.add('cd-more-info');
               newDiv.classList.add('editable-sectionPoints');
               newDiv.id = point.id;
-              newDiv.innerHTML = point.data;  // Se precisar que inicialmente esteja escondido
+              newDiv.innerHTML = point.data;
+              pointCounter++;
       
               // Cria e adiciona o botão de fechar
               const closeButton = document.createElement('button');
@@ -932,9 +942,23 @@ function getSection(elements, backgroundColor, points, position = null) {
               newDiv.appendChild(closeButton);
       
               // Identifica o elemento DOM correspondente ao item.id
-              const itemElement = document.querySelector(`#${id}`);
+              let itemElement;
+              console.log(type)
+              
+              if(type === 'type6-right'){
+                itemElement = document.querySelector(`#${rightDiv.id}`);
+                console.log('type right entrei')
+                
+              }else if(type === 'type6-left'){
+                console.log('type left entrei')
+                itemElement = document.querySelector(`#${leftDiv.id}`);
+              }
+              console.log('itemelement',itemElement)
               if (itemElement) {
                 // Adiciona a nova div ao item atual
+                const p = document.createElement('p');
+                p.innerHTML = `Texto do point ${point.id}`
+                itemElement.appendChild(p);
                 itemElement.appendChild(newDiv);
       
                 // Chama a função addEditor para adicionar o editor na div
@@ -972,6 +996,7 @@ function getSection(elements, backgroundColor, points, position = null) {
 }
 
 function addNewSection(position = null) {
+  console.log(pointListCounter)
   sectionContainer = document.createElement('section');
   /* sectionContainer.dataset.type = type; */
   sectionContainer.id = `section-${sectionCount}`;
@@ -997,7 +1022,7 @@ function addNewSection(position = null) {
 
   const deleteButton = document.createElement('button');
   deleteButton.innerHTML = 'Apagar Seção';
-  deleteButton.className = 'delete-button';
+  deleteButton.className = 'delete-button btn btn-danger';
   buttonsSection.appendChild(deleteButton);
   const sectionToDelete = sectionCount;
   // Adiciona evento de clique ao botão para apagar a seção
@@ -1065,6 +1090,7 @@ function addNewSection(position = null) {
 }
 
 function imageClickHandler(event, pointList) {
+  console.log(pointList)
   const pointList2 = document.getElementById(pointList);
   const image = event.target;
 
@@ -1125,7 +1151,7 @@ function imageClickHandler(event, pointList) {
   }
 }
 
-function buildImg(imgApi, pointList) {
+function buildImg(imgApi, pointList) { // TODO adicionar o loading lazy
   const pictureElement = document.createElement('picture');
 
   Object.keys(imgApi.srcset).forEach(size => {
