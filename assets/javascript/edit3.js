@@ -1,4 +1,4 @@
-const token = localStorage.getItem('token');
+
 
 const urlBase = 'http://localhost:8000/';/*https://landingpages.svr6.appsfarma.com/  */
 let namePage = ''
@@ -43,7 +43,7 @@ const buttonNewPage = document.getElementById('buttonNewPage');
 document.addEventListener('DOMContentLoaded', async function () {
   const storedToken = localStorage.getItem('token');
   namePage = localStorage.getItem('namePage');
-
+  const token = localStorage.getItem('token');
 
   if (storedToken) {
     namePageLogin.style.display = 'block';
@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   let imgApi = '';
   imageInput.addEventListener('change', async function (event) {
     const file = event.target.files[0];
+    console.log(token)
 
     try {
       const formData = new FormData();
@@ -348,7 +349,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         addEditor(leftDiv.id);
         addEditor(centerDiv.id);
         addEditor(rightDiv.id);
-      } if (type === 'type5') {
+      } else if (type === 'type5') {
         contactForm = 1;
 
         const divInfo = document.createElement('div');
@@ -374,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         addEditor(div.id);
-      } if (type === 'type6-left' || type === 'type6-right') {
+      } else if (type === 'type6-left' || type === 'type6-right') {
         const divInfoLeft = document.createElement('div');
         divInfoLeft.className = 'type-dropdown';
         const pLeft = document.createElement('h3');
@@ -449,6 +450,31 @@ document.addEventListener('DOMContentLoaded', async function () {
 
           addEditor(leftDiv.id);
         }
+      } else if (type === 'type7') {
+        const divInfo = document.createElement('div');
+        divInfo.className = 'type-dropdown';
+        const p = document.createElement('h3');
+        p.innerHTML = `Code div`;
+        divInfo.appendChild(p)
+        const selectContainer = createDropdownAos(sectionId);
+        divInfo.appendChild(selectContainer);
+        infoDiv.appendChild(divInfo);
+
+        const div = document.createElement('div');
+        div.className = 'editable-section';
+        div.id = sectionId;
+        div.innerHTML = content;
+        infoDiv.appendChild(div);
+
+        // Adicionar a sectionContainer ao editor-container
+        if (position !== null && position < document.getElementById('editor-container').children.length) {
+          document.getElementById('editor-container').insertBefore(sectionContainer, document.getElementById('editor-container').children[position]);
+        } else {
+          document.getElementById('editor-container').appendChild(sectionContainer);
+        }
+
+        addEditor(div.id);
+
       }
     }
     $('#exampleModal').modal('hide');
@@ -658,6 +684,7 @@ function decrementIds(pointsArray, threshold, idPrefix) {
 }
 
 function decrementInfoIds(infoPointsArray, threshold, idPrefix) {
+  console.log('entrei no descontar infoIds')
   infoPointsArray.forEach(point => {
     const id = point.id;
     const number = parseInt(id.split('-')[2], 10);
@@ -789,6 +816,7 @@ class MyUploadAdapter {
   }
 
   upload() {
+    const token = localStorage.getItem('token');
     return this.loader.file
       .then(file => new Promise((resolve, reject) => {
         const formData = new FormData();
@@ -805,24 +833,40 @@ class MyUploadAdapter {
           .then(response => {
             if (response.data && response.data.url) {
               uploadDataStore[this.sectionId] = response.data;
-              const pictureHtml = `
-                <picture>
-                  <source srcset="${response.data.srcset['320w']} 320w" media="(max-width: 320px)">
-                  <source srcset="${response.data.srcset['480w']} 480w" media="(max-width: 480px)">
-                  <source srcset="${response.data.srcset['800w']} 800w" media="(max-width: 800px)">
-                  <img src="${response.data.url}" alt="Imagem carregada asddasd" loading="lazy">
-                </picture>
-              `;
+              console.log(uploadDataStore);
+
+              let pictureHtml;
+              if (response.data.srcset) {
+                console.log('entrei srcset')
+                pictureHtml = `
+                  <picture>
+                    <source srcset="${response.data.srcset['320w']} 320w" type="image/webp" media="(max-width: 320px)">
+                    <source srcset="${response.data.srcset['480w']} 480w" type="image/webp" media="(max-width: 480px)">
+                    <source srcset="${response.data.srcset['800w']} 800w" type="image/webp" media="(max-width: 800px)">
+                    <img src="${response.data.url}" alt="Imagem carregada" loading="lazy">
+                  </picture>
+                `;
+              } else {
+                console.log('entrei else')
+
+                pictureHtml = `<img src="${response.data.url}" alt="Imagem carregada" loading="lazy">`;
+              }
+
+              console.log(pictureHtml)
+
               const viewFragment = this.editor.data.processor.toView(pictureHtml);
               const modelFragment = this.editor.data.toModel(viewFragment);
+              console.log( modelFragment )
 
               this.editor.model.change(writer => {
                 // Inserir o fragmento de model no local da seleção
                 this.editor.model.insertContent(modelFragment, this.editor.model.document.selection);
+                const finalData = this.editor.getData();
+                console.log('Final editor data:', finalData);
               });
 
               resolve({
-                default: response.data.url
+                default: pictureHtml // Aqui passa o HTML direto sem escapar
               });
             } else {
               reject(response.data.message || 'Upload failed');
@@ -1132,7 +1176,7 @@ function getSection(elements, backgroundColor, points, position = null) {
         addEditor(leftDiv.id);
         addEditor(centerDiv.id);
         addEditor(rightDiv.id);
-      } if (type === 'type5') {
+      } else if (type === 'type5') {
         contactForm = 1;
 
         const divInfo = document.createElement('div');
@@ -1159,7 +1203,7 @@ function getSection(elements, backgroundColor, points, position = null) {
         }
 
         addEditor(div.id);
-      } if (type === 'type6-left' || type === 'type6-right') {
+      } else if (type === 'type6-left' || type === 'type6-right') {
         const divInfoLeft = document.createElement('div');
         divInfoLeft.className = 'type-dropdown';
         const pLeft = document.createElement('h3');
@@ -1337,6 +1381,34 @@ function getSection(elements, backgroundColor, points, position = null) {
 
 
 
+      } else if (type === 'type7') {
+        const divInfo = document.createElement('div'); // TODO posso colocar no type1 e 2
+        divInfo.className = 'type-dropdown';
+        const p = document.createElement('h3');
+
+        p.innerHTML = `Code div`;
+
+        divInfo.appendChild(p)
+        const selectContainer = createDropdownAos(sectionId, item.elements[0].aos);
+        divInfo.appendChild(selectContainer);
+        infoDiv.appendChild(divInfo);
+
+        const div = document.createElement('div');
+        div.className = 'editable-section';
+
+        div.id = sectionId;
+        contentEditor = item.elements[0].data
+        div.innerHTML = contentEditor;
+        infoDiv.appendChild(div);
+
+        // Adicionar a sectionContainer ao editor-container
+        if (position !== null && position < document.getElementById('editor-container').children.length) {
+          document.getElementById('editor-container').insertBefore(sectionContainer, document.getElementById('editor-container').children[position]);
+        } else {
+          document.getElementById('editor-container').appendChild(sectionContainer);
+        }
+
+        addEditor(div.id);
       }
     });
     // Adicionar a sectionContainer ao editor-container
@@ -1703,19 +1775,23 @@ function addPointer(event, pointList) {
 }
 
 function buildImg(imgApi, pointList) {
-  const pictureElement = document.createElement('picture');
-
-  Object.keys(imgApi.srcset).forEach(size => {
-    const sourceElement = document.createElement('source');
-    sourceElement.setAttribute('srcset', `${imgApi.srcset[size]} ${size}`);
-    sourceElement.setAttribute('media', `(max-width: ${size}px)`);
-    pictureElement.appendChild(sourceElement);
-  });
-
   const imgElement = document.createElement('img');
   imgElement.setAttribute('src', imgApi.url);
   imgElement.setAttribute('alt', 'Imagem carregada');
-  pictureElement.appendChild(imgElement);
+  imgElement.setAttribute('loading', 'lazy');
+  let pictureElement;
+  if (imgApi.srcset) {
+    pictureElement = document.createElement('picture');
+    Object.keys(imgApi.srcset).forEach(size => {
+      const cleanSize = size.replace('w', ''); 
+      const sourceElement = document.createElement('source');
+      sourceElement.setAttribute('srcset', `${imgApi.srcset[size]} ${size}`);
+      sourceElement.setAttribute('type', 'image/webp');
+      sourceElement.setAttribute('media', `(max-width: ${cleanSize}px)`);
+      pictureElement.appendChild(sourceElement);
+    });
+    pictureElement.appendChild(imgElement);
+  }
 
   // Cria um manipulador de eventos e armazena-o na própria imagem
   const clickHandler = (event) => {
@@ -1723,8 +1799,12 @@ function buildImg(imgApi, pointList) {
   };
 
   imgElement.addEventListener('click', clickHandler);
-  imgElement.clickHandler = clickHandler; // Armazena o manipulador na imagem
-  return pictureElement;
+  imgElement.clickHandler = clickHandler;
+  if(imgApi.srcset){
+    return pictureElement;
+  } else{
+    return imgElement
+  }
 }
 
 async function data(namePageInput) {
@@ -1867,7 +1947,7 @@ saveBt.addEventListener('click', async function () {
     });
 
     if (response.ok) {
-      window.location.href = 'index3.html';
+      window.location.href = 'teste.html';
     } else {
       console.error(`Erro ao enviar dados da seção ${requestBody.section}. Status: ${response.status}`);
     }

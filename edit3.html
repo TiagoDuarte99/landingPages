@@ -311,7 +311,7 @@
       display: inline-block;
     }
 
-    img{
+    img {
       max-width: 650px;
     }
 
@@ -374,12 +374,722 @@
     } */
       }
     }
+
+
+
+
+    .functioning {
+      /*  padding: 80px 0; */
+      background-color: var(--secundary-color-light);
+
+      & .info-functioning {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        height: 50px;
+
+        & .pulse-button {
+          width: 50px;
+        }
+
+        & ul {
+          padding: 0 !important;
+        }
+      }
+
+      & .center-imgs {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+      }
+
+      & .left {
+        position: relative;
+        width: 724px;
+        height: 610px;
+      }
+
+      & .menu-quiosque {
+        width: 100%;
+        position: absolute;
+        z-index: 5;
+        top: 70%;
+      }
+
+      & .quiosque2 {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        width: 100%;
+
+        & .quiosqueSvg {
+          width: 278px;
+          height: 545px;
+        }
+      }
+
+      & .quiosque {
+        width: 100%;
+        position: absolute;
+        z-index: 1;
+      }
+
+      & .ecra2 {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      & .ecra {
+        width: 100%;
+        position: absolute;
+        z-index: 1;
+      }
+
+      & .tab-content {
+        position: absolute;
+        z-index: 0;
+      }
+
+      .ecra-info-promotions,
+      .ecra-info-products,
+      .ecra-info-brands,
+      .ecra-info-categories,
+      .ecra-info-buying,
+      .ecra-info-shearch,
+      .ecra-info-card {
+        height: inherit;
+        width: 100%;
+        position: absolute;
+        z-index: 4 !important;
+
+        & #pointPromocoes {
+          top: 5%;
+          left: 43%;
+        }
+
+        .info4 {
+          top: 13%;
+          left: 40%;
+        }
+
+        & #pointProdutos {
+          bottom: 30%;
+          right: 56%;
+        }
+
+        & #pointProdutosMarca {
+          bottom: 87%;
+          right: 33%;
+        }
+
+        & #pointProdutosRemoverFiltros {
+          bottom: 81%;
+          right: 40%;
+        }
+
+        & #pointProdutosMenu {
+          bottom: 81%;
+          right: 63%;
+        }
+
+        & #pointShowProdutsDetails {
+          bottom: 60%;
+          right: 48%;
+        }
+
+        & #pointProdutsDetails {
+          bottom: 86%;
+          right: 60%;
+        }
+
+        & #pointProdutsPlus {
+          bottom: 45%;
+          right: 43%;
+        }
+
+        & #pointProdutsExpand {
+          bottom: 79%;
+          right: 47%;
+        }
+
+        & #pointProductsBag {
+          bottom: 90%;
+          right: 32%;
+        }
+
+        & #pointEquivalentProdut {
+          bottom: 41%;
+          right: 43%;
+        }
+
+        & .info5 {
+          top: 42%;
+          left: 16%;
+        }
+
+        & .infoMarca {
+          top: 5%;
+          left: 70%;
+        }
+
+        & .info7 {
+          top: 21%;
+          left: 55%;
+        }
+
+        & .info8 {
+          top: 14%;
+          left: 9%;
+        }
+
+        & .info9 {
+          top: 22%;
+          left: 59%;
+        }
+
+        & .info10 {
+          top: 23%;
+          left: 45%;
+        }
+
+        & .info11 {
+          top: 23%;
+          left: 30%;
+        }
+
+        /* Marcas */
+
+        & #pointBrands {
+          bottom: 38%;
+          right: 52%;
+        }
+
+        & .info22 {
+          position: absolute;
+          top: 38% !important;
+          left: 50% !important;
+          -webkit-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 50% !important;
+          max-width: 90% !important;
+        }
+
+        & #pointServices {
+          bottom: 58%;
+          right: 48%;
+        }
+
+        & #pointServicesDetails {
+          bottom: 37%;
+          right: 70%;
+        }
+
+        & #pointServicesInfo {
+          bottom: 23%;
+          right: 30%;
+        }
+
+        & .infoServices {
+          top: 52%;
+          left: 15%;
+        }
+
+        /*  //Compra */
+
+        & #pointBuying {
+          bottom: 67%;
+          right: 35%;
+        }
+
+        & #pointBuyingBag {
+          bottom: 90%;
+          right: 35%;
+        }
+
+        & #pointBuyingNext {
+          bottom: 44%;
+          right: 41%;
+        }
+
+        & #pointBuyingClient {
+          bottom: 80%;
+          right: 63%;
+        }
+
+        & #pointBuyingClientCard {
+          bottom: 65%;
+          right: 43%;
+        }
+
+        & #pointBuyingClientCoupon {
+          bottom: 57%;
+          right: 60%;
+        }
+
+        & #pointBuyingClientTotal {
+          bottom: 52%;
+          right: 38%;
+        }
+
+        & #pointBuyingBack {
+          bottom: 43%;
+          right: 52%;
+        }
+
+        & #pointBuyingNextClient {
+          bottom: 43%;
+          right: 44%;
+        }
+
+        & #pointBuyingBackClient {
+          bottom: 42%;
+          right: 53%;
+        }
+
+        & #pointBuyingPay {
+          bottom: 80%;
+          right: 40%;
+        }
+
+        & #pointBuyingPayInfo {
+          bottom: 52%;
+          right: 40%;
+        }
+
+        & #pointBuyingNextMbWay {
+          bottom: 42%;
+          right: 43%;
+        }
+
+        & #pointBuyingMbWayInfo {
+          bottom: 68%;
+          right: 38%;
+        }
+
+        & #pointBuyingBackMbWay {
+          bottom: 39%;
+          right: 55%;
+        }
+
+        & #pointBuyingNextReceipt {
+          bottom: 55%;
+          right: 37%;
+        }
+
+        /* //img 5 */
+        & #pointBuyingReceipt {
+          bottom: 60%;
+          right: 36%;
+        }
+
+        & #pointBuyingNextEvaluation {
+          bottom: 47%;
+          right: 40%;
+        }
+
+        & #pointBuyingBackReceipt {
+          bottom: 38%;
+          right: 52%;
+        }
+
+        & #pointBuyingEvaluation {
+          bottom: 56%;
+          right: 37%;
+        }
+
+        & #pointBuyingBackEvaluation {
+          bottom: 37%;
+          right: 52%;
+        }
+
+        & .info12 {
+          top: 1%;
+          left: 38%;
+        }
+
+        & .info13 {
+          top: 2%;
+          left: 38%;
+        }
+
+        & .info14 {
+          top: 12%;
+          left: 10%;
+        }
+
+        & .info15 {
+          top: 1%;
+          left: 65%;
+        }
+
+        & .info16 {
+          top: 25%;
+          left: 13%;
+        }
+
+        & .info17 {
+          top: 6%;
+          left: 65%;
+        }
+
+        & .info18 {
+          top: 2%;
+          left: 32%;
+        }
+
+        & .info19 {
+          top: 0%;
+          left: 33%;
+        }
+
+        & .info20 {
+          top: 1%;
+          left: 35%;
+        }
+
+        & .info21 {
+          top: 0%;
+          left: 37%;
+        }
+
+        & .info220 {
+          top: 20%;
+          left: 35%;
+        }
+
+        /* //Categorias */
+
+        & #pointCategories {
+          bottom: 77%;
+          right: 36%;
+        }
+
+        & #pointCategoriesPromotions {
+          bottom: 47%;
+          right: 56%;
+        }
+
+        & #pointCategoriesNext {
+          bottom: 85%;
+          right: 58%;
+        }
+
+        & #pointCategoriesNext2 {
+          bottom: 90%;
+          right: 50%;
+        }
+
+        & #pointSubCategories {
+          bottom: 79%;
+          right: 36%;
+        }
+
+        & .info23 {
+          top: 26%;
+          left: 48%;
+        }
+
+        & .info24 {
+          top: 25%;
+          left: 46%;
+        }
+
+        & .info25 {
+          position: absolute;
+          top: 38% !important;
+          left: 50% !important;
+          -webkit-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 50% !important;
+          max-width: 90% !important;
+        }
+
+        /* //Scan Product */
+
+        & #pointScanProduct {
+          bottom: 40%;
+          right: 35%;
+        }
+
+        & .info26 {
+          position: absolute;
+          top: 36%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 50%;
+          max-width: 90%;
+        }
+
+        /* //Cartao Cliente */
+        & #pointScanCard {
+          bottom: 70%;
+          right: 35%;
+        }
+
+        & #pointScanCardNext {
+          bottom: 40%;
+          right: 45%;
+        }
+
+        & #pointScanCardNext2 {
+          bottom: 78%;
+          right: 60%;
+        }
+
+        & #pointScanCardBalance {
+          bottom: 49%;
+          right: 42%;
+        }
+
+        & #pointScanCardProducts {
+          bottom: 38%;
+          right: 37%;
+        }
+
+        & .info27 {
+          top: 1%;
+          left: 37%;
+        }
+
+        & .info28 {
+          top: 3%;
+          left: 43%;
+        }
+
+        & .info29 {
+          top: 21%;
+          left: 35%;
+        }
+      }
+
+
+
+      & .btn-close-info {
+        background-color: var(--secundary-color);
+        border: 0;
+        border-radius: 100px;
+        color: var(--white);
+        width: 30px;
+        height: 30px;
+      }
+
+      @media (max-width: 300px) {
+
+        & .infoServices,
+        .infoMarca,
+        .info4,
+        .info5,
+        .info7,
+        .info8,
+        .info9,
+        .info10,
+        .info11,
+        .info12,
+        .info13,
+        .info14,
+        .info15,
+        .info16,
+        .info17,
+        .info18,
+        .info19,
+        .info20,
+        .info21,
+        .info220,
+        .info22,
+        .info23,
+        .info24,
+        .info25,
+        .info26,
+        .info27,
+        .info28,
+        .info29 {
+          position: absolute;
+          top: 30% !important;
+          left: 50% !important;
+          -webkit-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 90% !important;
+          max-width: 90% !important;
+        }
+
+        & .btn-close-info {
+          display: block !important;
+        }
+      }
+
+      @media (min-width: 301px) and (max-width: 768px) {
+
+        & .infoServices,
+        .infoMarca,
+        .info4,
+        .info5,
+        .info7,
+        .info8,
+        .info9,
+        .info10,
+        .info11,
+        .info12,
+        .info13,
+        .info14,
+        .info15,
+        .info16,
+        .info17,
+        .info18,
+        .info19,
+        .info20,
+        .info21,
+        .info220,
+        .info22,
+        .info23,
+        .info24,
+        .info25,
+        .info26,
+        .info27,
+        .info28,
+        .info29 {
+          position: absolute;
+          top: 40% !important;
+          left: 50% !important;
+          -webkit-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 90% !important;
+          max-width: 90% !important;
+        }
+
+        & .btn-close-info {
+          display: block !important;
+        }
+      }
+
+      svg {
+
+        & .categoriesSVG:hover,
+        .shearchSVG:hover,
+        .cardSVG:hover,
+        .promotionsSVG:hover,
+        .productsSVG:hover,
+        .brandsSVG:hover,
+        .buyingSVG:hover {
+          cursor: pointer;
+
+          & circle {
+            fill: #DDF3EC;
+          }
+
+          & rect {
+            fill: #DDF3EC;
+          }
+
+          & .path-name {
+            fill: #1CAE81;
+          }
+
+          & .path-icon {
+            stroke: #1CAE81;
+          }
+        }
+
+        & .active {
+          & circle {
+            fill: #DDF3EC;
+          }
+
+          & rect {
+            fill: #DDF3EC;
+          }
+
+          & .path-name {
+            fill: #1CAE81;
+          }
+
+          & .path-icon {
+            stroke: #1CAE81;
+          }
+        }
+      }
+
+      @media (max-width: 768px) {
+        .menu-quiosque {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+
+      @media (max-width: 475px) {
+        .menu-quiosque {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+
+      @media (max-width: 300px) {
+        .left {
+          height: 100dvh;
+        }
+
+        .quiosqueSvg {
+          width: 100% !important;
+          height: 100% !important;
+        }
+
+        .menu-quiosque {
+          width: 100% !important;
+          height: 100% !important;
+        }
+
+        .img-ecra {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+
+      @media (max-width: 300px) {
+        & .menu-quiosque {
+          top: 335px;
+        }
+      }
+
+      @media (max-width: 245px) {
+        .menu-quiosque {
+          top: 310px;
+        }
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <section id="title-edit" style="display: none;" > 
+  <section id="title-edit" style="display: none;">
     <div class="container">
       <div class="row">
         <div>
@@ -423,7 +1133,8 @@
     <div class="container">
       <div class="login-container bg-light">
         <div class="login-header">
-          <img src="https://wemakeit.es/wp-content/uploads/2023/01/logo-we-make-it-HC.svg" width="250" height="74" alt="We Make It Logotipo">
+          <img src="https://wemakeit.es/wp-content/uploads/2023/01/logo-we-make-it-HC.svg" width="250" height="74"
+            alt="We Make It Logotipo">
           <h4 class="modal-title" id="exampleModalLabel">
             Login Editar Landing Pages
           </h4>
@@ -441,7 +1152,7 @@
               <button id="buttonNamePage" type="button" class="btn btn-primary btn-block">Carregar Página</button>
             </div>
           </form>
-          
+
           <form id="newPage-form" style="margin-top: 20px;">
             <div class="form-group">
               <label for="newPageName">Novo Nome da Página:</label>
@@ -456,7 +1167,7 @@
       </div>
     </div>
   </section>
-  
+
 
   <div class="buttons-edit" id="buttons-edit" style="display: none;">
     <button class="btn btn-primary" id="buttonRegister" data-bs-toggle="modal"
@@ -600,6 +1311,12 @@
                 <input type="radio" id="sectionType6" name="sectionType" class="custom-control-input" value="type6">
                 <label class="custom-control-label" for="sectionType6">
                   <img src="assets/images/imagem bitmapContact.png" alt="Tipo 6">
+                </label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input type="radio" id="sectionType7" name="sectionType" class="custom-control-input" value="type7">
+                <label class="custom-control-label" for="sectionType7">
+                  <img src="assets/images/imagem bitmapContact.png" alt="Tipo 7">
                 </label>
               </div>
 
